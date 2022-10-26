@@ -1,145 +1,199 @@
-//package za.ac.cput.views;
-//
-//import com.google.gson.Gson;
-//import okhttp3.*;
-//import za.ac.cput.domain.parentdetails.Fees;
-//import za.ac.cput.domain.parentdetails.Parent;
-//import za.ac.cput.domain.staffdetails.Subject;
-//import za.ac.cput.domain.staffdetails.SubjectDepartment;
-//import za.ac.cput.domain.staffdetails.Teacher;
-//import za.ac.cput.domain.studentdetails.*;
-//import za.ac.cput.factory.studentdetails.StudentFactory;
-//
-//import javax.swing.*;
-//import javax.swing.table.DefaultTableModel;
-//import java.awt.*;
-//import java.awt.event.ActionEvent;
-//import java.awt.event.ActionListener;
-//import java.io.IOException;
-//import java.util.ArrayList;
-//
-//public class AdminGUI extends JFrame implements ActionListener {
-//
-//    public static final MediaType JSON = MediaType.get("application/jason; charset=utf-8");
-//
-//    private static OkHttpClient client = new OkHttpClient();
-//    private DefaultTableModel StudentTable = new DefaultTableModel();
-//    private JTable tblStudent = new JTable(StudentTable);
-//
-//    ArrayList<Student> StudentList = new ArrayList<>();
-//    ArrayList<Parent> ParentList = new ArrayList<>();
-//    ArrayList<Sport> SportList = new ArrayList<>();
-//    ArrayList<Culture> CultureList = new ArrayList<>();
-//    ArrayList<Transport> TransportList = new ArrayList<>();
-//    ArrayList<StudentPrestige> StudentPrestigeList = new ArrayList<>();
-//    ArrayList<Subject> SubjectList = new ArrayList<>();
-//    ArrayList<SubjectDepartment> SubjectDepartmentList = new ArrayList<>();
-//    ArrayList<Teacher> TeacherList = new ArrayList<>();
-//    ArrayList<Fees> FeesList = new ArrayList<>();
-//
-//    private JFrame pnlMain = new JFrame("Student Table");
-//    private JPanel pnlBody = new JPanel();
-//    private JButton btnGet = new JButton("Get");
-//    private JButton btnSave = new JButton("Save");
-//    private JButton btndelete = new JButton("Delete");
-//    private JButton btnSearch = new JButton("Search");
-//    private JButton btnExit = new JButton("Exit");
-//
-//    private JTextField txtDescription = new JTextField();
-//    private GridBagConstraints gbc = new GridBagConstraints();
-//
-//    public AdminGUI(){
-//        StudentTable.addColumn("Student Id");
-//        StudentTable.addColumn("First Name");
-//        StudentTable.addColumn("Last Name");
-//        StudentTable.addColumn("Grade");
-//        StudentTable.addColumn("Date of Birth");
-//        StudentTable.addColumn("ID Number");
-//        StudentTable.addColumn("Address");
-//        StudentTable.addColumn("Important Health Info");
-//        StudentTable.addColumn("Student Average");
-//        tblStudent.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-//
-//        tblStudent.setModel(StudentTable);
-//        StudentTable = (DefaultTableModel) tblStudent.getModel();
-//
-//        pnlBody.setLayout(new GridBagLayout());
-//    }
-//
-//    public void runStudentTable(){
-//        pnlMain.add(pnlBody);
-//
-//        gbc.gridx = 0;
-//        gbc.gridy = 0;
-//        pnlBody.add(new JScrollPane(tblStudent));
-//
-//        gbc.gridx = 0;
-//        gbc.gridy = 1;
-//        gbc.fill = GridBagConstraints.CENTER;
-//        pnlBody.add(btnGet);
-//        pnlBody.add(btnSave);
-//        pnlBody.add(txtDescription);
-//        pnlBody.add(btndelete);
-//        pnlBody.add(btnSearch);
-//        pnlBody.add(btnExit);
-//
-//        btnGet.addActionListener(this);
-//        btnSave.addActionListener(this);
-//        btndelete.addActionListener(this);
-//        btnSearch.addActionListener(this);
-//        btnExit.addActionListener(this);
-//
-//        pnlMain.pack();
-//        pnlMain.setVisible(true);
-//        pnlMain.setLocationRelativeTo(null);
-//        pnlMain.setResizable(false);
-//        pnlMain.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//    }
-//    public static void main(String[] args) {
-//        new AdminGUI().runStudentTable();
-//    }
-//
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        if(btnExit.equals(e.getSource())) {
-//            pnlMain.dispose();
-//        }
-//        if(btnGet.equals(e.getSource())) {
-//
-//        }
-//        if(btndelete.equals(e.getSource())) {
-//
-//        }
-//        if(btnSearch.equals(e.getSource())){
-//
-//        }
-//        if(btnSave.equals(e.getSource())) {
-//            store(txtDescription.getText());
-//        } else if (e.getSource() == btnExit) {
-//            System.exit(0);
-//        }
-//    }
-//    public void store(String description) {
-//        try{
-//            final String URL = "http://localhost:8080/abc-school-management/student/findAll";
-//            Student student = StudentFactory.Build(description);
-//            Gson g = new Gson();
-//            String jasonString = g.toJson(student);
-//            String r = post(URL, jasonString);
-//            if (r != null)
-//                JOptionPane.showMessageDialog(null, "Successfully saved.");
-//            else
-//                JOptionPane.showMessageDialog(null,"Sorry, could not store.");
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, e.getMessage());
-//        }
-//    }
-//
-//    public String post(final String URL, String json) throws IOException {
-//        RequestBody body = RequestBody.create(JSON, json);
-//        Request request = new Request.Builder().url(URL).post(body).build();
-//        try (Response response = client.newCall(request).execute()) {
-//            return response.body().string();
-//        }
-//    }
-//}
+package za.ac.cput.views;
+
+import com.google.gson.Gson;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import za.ac.cput.domain.studentdetails.Student;
+
+import javax.swing.*;
+import javax.swing.table.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+public class AdminGUI extends JFrame implements ActionListener
+{
+
+    public static final MediaType JSON = MediaType.get("application/jason; charset=utf-8");
+
+    private static OkHttpClient client = new OkHttpClient();
+
+    private static String run(String URL) throws IOException {
+        Request request = new Request.Builder()
+                .url(URL)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().string();
+        }
+    }
+
+    private JFrame frame = new JFrame("Registration");
+    private JPanel north = new JPanel();
+    private JPanel south = new JPanel();
+
+    private JButton btnAddStudent = new JButton("Add");
+    private JButton btnDelete = new JButton("Delete");
+    private JButton btnGet = new JButton("Get");
+    private JButton btnExit = new JButton("Exit");
+
+    public void runAdminGUI() {
+        frame.add(north);
+        frame.add(south);
+        frame.add(north, BorderLayout.NORTH);
+        frame.add(south, BorderLayout.SOUTH);
+        south.setLayout(new GridLayout(1, 5));
+
+        TableModel model = new DefaultTableModel();
+
+        Object headers[] = {"Student Id","First Name","Last Name","Grade","Date of Birth","Id Number","Address","Health Details","Student Average"};
+
+        TableColumnModel columnModel = new DefaultTableColumnModel();
+        TableColumn firstColumn = new TableColumn(1);
+        firstColumn.setHeaderValue(headers[0]);
+        columnModel.addColumn(firstColumn);
+
+        TableColumn secondColumn = new TableColumn(0);
+        secondColumn.setHeaderValue(headers[1]);
+        columnModel.addColumn(secondColumn);
+
+        TableColumn thirdColumn = new TableColumn(0);
+        thirdColumn.setHeaderValue(headers[2]);
+        columnModel.addColumn(thirdColumn);
+
+        TableColumn forthColumn = new TableColumn(0);
+        forthColumn.setHeaderValue(headers[3]);
+        columnModel.addColumn(forthColumn);
+
+        TableColumn fifthColumn = new TableColumn(0);
+        fifthColumn.setHeaderValue(headers[4]);
+        columnModel.addColumn(fifthColumn);
+
+        TableColumn sixthColumn = new TableColumn(0);
+        sixthColumn.setHeaderValue(headers[5]);
+        columnModel.addColumn(sixthColumn);
+
+        TableColumn seventhColumn = new TableColumn(0);
+        seventhColumn.setHeaderValue(headers[6]);
+        columnModel.addColumn(seventhColumn);
+
+        TableColumn eighthColumn = new TableColumn(0);
+        eighthColumn.setHeaderValue(headers[7]);
+        columnModel.addColumn(eighthColumn);
+
+        TableColumn ninthColumn = new TableColumn(0);
+        ninthColumn.setHeaderValue(headers[8]);
+        columnModel.addColumn(ninthColumn);
+
+        JTable table = new JTable(model, columnModel);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        south.add(btnAddStudent);
+
+        south.add(btnDelete);
+
+        south.add(btnAddStudent);
+
+        south.add(btnGet);
+
+        south.add(btnExit);
+
+        btnDelete.addActionListener(this);
+        btnAddStudent.addActionListener(this);
+        btnGet.addActionListener(this);
+        btnExit.addActionListener(this);
+
+        frame.add(scrollPane, BorderLayout.CENTER);
+        frame.setSize(1000, 500);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (btnDelete.equals(e.getSource())) {
+
+        }
+        if (btnAddStudent.equals(e.getSource())) {
+            AddStudent();
+        }
+        if (btnGet.equals(e.getSource())){
+            findStudent();
+        }
+        if (btnExit.equals(e.getSource())) {
+            System.exit(0);
+        }
+
+    }
+    public static void findStudent() {
+        try {
+            System.out.println("Student Details: ");
+            final String URL = "http://localhost:8080/abc-school-management/student/findAll";
+            String responsebody = run(URL);
+            JSONArray student = new JSONArray(responsebody);
+
+            for (int i = 0; i < student.length(); i++) {
+                JSONObject students = student.getJSONObject(i);
+
+                Gson g = new Gson();
+                Student s = g.fromJson(students.toString(), Student.class);
+                System.out.println(s.toString());
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public static void AddStudent() {
+        try {
+            System.out.println("Added Student: ");
+            final String URL = "http://localhost:8080/abc-school-management/student/save";
+            String responsebody = run(URL);
+            JSONArray student = new JSONArray(responsebody);
+
+            for (int i = 0; i < student.length(); i++) {
+                JSONObject students = student.getJSONObject(i);
+
+                Gson g = new Gson();
+                Student s = g.fromJson(students.toString(), Student.class);
+                System.out.println(s.toString());
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void UpdateStudent() {
+        try {
+            System.out.println("Added Student: ");
+            final String URL = "http://localhost:8080/abc-school-management/student/save";
+            String responsebody = run(URL);
+            JSONArray student = new JSONArray(responsebody);
+
+            for (int i = 0; i < student.length(); i++) {
+                JSONObject students = student.getJSONObject(i);
+
+                Gson g = new Gson();
+                Student s = g.fromJson(students.toString(), Student.class);
+                System.out.println(s.toString());
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        new AdminGUI().runAdminGUI();
+    }
+}
