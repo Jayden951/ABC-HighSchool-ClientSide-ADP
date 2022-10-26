@@ -106,7 +106,6 @@ public class AppConsole {
                 Gson g = new Gson();
                 Student s = g.fromJson(students.toString(), Student.class);
                 System.out.println(s.toString());
-
             }
         }
         catch (Exception e) {
@@ -254,9 +253,6 @@ public class AppConsole {
             System.out.println(e.getMessage());
         }
     }
-
-
-
 
     public static void main(String[] args) {
         findAdmin();
